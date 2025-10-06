@@ -5,7 +5,7 @@ const user: User = {
   firstName: "admin",
   lastName: "admin",
   username: "admin",
-  role: "STAFF",
+  role: "ADMIN",
 };
 
 const GlobalContext = createContext<User | null>(null);

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Consumer } from "../types/Consumer";
 import { Card } from "react-bootstrap";
 import { Link, useSearchParams } from "react-router";
