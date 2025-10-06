@@ -3,7 +3,7 @@ import { Button, Form } from "react-bootstrap";
 import type { Consumer } from "../types/Consumer";
 import axios from "axios";
 import { useNavigate } from "react-router";
-import type { User } from "../types/User";
+import { useGlobalContext } from "../context/AppContext";
 
 type FormConsumer = Omit<Consumer, "id">;
 
@@ -14,14 +14,10 @@ const NewConsumer = () => {
     dateOfBirth: "",
   });
 
-  const user: User = {
-    firstName: "admin",
-    lastName: "admin",
-    username: "admin",
-    role: "STAFF",
-  };
+  const user = useGlobalContext();
 
   const navigate = useNavigate();
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setConsumer((prev) => ({
       ...prev,
@@ -37,6 +33,7 @@ const NewConsumer = () => {
         consumer
       );
 
+      console.log(res.data);
       navigate("/consumers");
     } catch (error) {
       console.log(error);
@@ -46,7 +43,7 @@ const NewConsumer = () => {
   return (
     <div className="container p-3">
       <h2>Add a consumer</h2>
-      {user.role === "ADMIN" ? (
+      {user?.role === "ADMIN" ? (
         <Form onSubmit={handleSubmit}>
           <Form.Group className="my-3">
             <Form.Label>First Name</Form.Label>

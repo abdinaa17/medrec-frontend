@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import type { Consumer } from "../types/Consumer";
-import { Button, Card } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { Link, useSearchParams } from "react-router";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Message from "../components/Message";
@@ -20,7 +20,6 @@ const Consumers = () => {
     setIsLoading(true);
     setError(null);
     try {
-      console.log(query + " from consumers");
       const res = query
         ? await axios.get(
             `http://localhost:8081/api/v1/consumers/search?query=${query}`
@@ -39,27 +38,8 @@ const Consumers = () => {
     }
   };
 
-  const debounce = (fn: any, delay: number) => {
-    let timerId: number;
-
-    return () => {
-      clearTimeout(timerId);
-
-      timerId = setTimeout(() => {
-        fn();
-      }, delay);
-    };
-  };
-
-  const debouncedFetch = useMemo(
-    () => debounce(fetchConsumers, 1000),
-    [fetchConsumers]
-  );
-
   useEffect(() => {
-    debouncedFetch();
-
-    // return () => debouncedFetch.cancel();
+    fetchConsumers();
   }, [query]);
 
   if (error) {

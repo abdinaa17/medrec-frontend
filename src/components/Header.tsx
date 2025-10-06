@@ -3,40 +3,28 @@ import {
   Col,
   Container,
   Form,
-  InputGroup,
   Nav,
   Navbar,
   Row,
 } from "react-bootstrap";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
-import type { User } from "../types/User";
+import { Link, useNavigate, useSearchParams } from "react-router";
+import { useGlobalContext } from "../context/AppContext";
 
 const Header = () => {
-  const user: User = {
-    firstName: "Jamal",
-    lastName: "Musiala",
-    username: "jmusiala17",
-    role: "STAFF",
-  };
-
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const location = useLocation();
+
+  const user = useGlobalContext();
 
   const handleSearch = async (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
 
     const value = searchParams.get("q") || "";
 
-    // if (location.pathname != "/consumers") {
     navigate({
       pathname: "/consumers",
       search: `?q=${encodeURIComponent(value)}`,
     });
-    //   return;
-    // }
-
-    // setSearchParams({ q: value });
 
     console.log(searchParams.get("q"));
   };
@@ -55,7 +43,7 @@ const Header = () => {
                 Consumers
               </Nav.Link>
             </Nav>
-            {user.role === "ADMIN" && (
+            {user?.role === "ADMIN" && (
               <Nav className="me-auto">
                 <Nav.Link as={Link} to="/new-consumer">
                   Add Consumer
@@ -81,15 +69,6 @@ const Header = () => {
                 </Col>
               </Row>
             </Form>
-            {/* 
-            <InputGroup>
-              <Form.Control
-                value={searchParams.get("q") || ""}
-                onChange={handleSearch}
-                className="px-3 mt-2"
-                style={{ maxWidth: "300px" }}
-              />
-            </InputGroup> */}
           </Navbar.Collapse>
         </Container>
       </Navbar>
