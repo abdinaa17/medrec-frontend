@@ -1,9 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 import "./App.css";
-import { Home, Consumers, SingleConsumer } from "./pages";
+import { Home, Consumers, SingleConsumer, NewConsumer } from "./pages";
 import Header from "./components/Header";
+import type { User } from "./types/User";
 
 const App = () => {
+  // const user:User = {
+  //     firstName: "Jamal",
+  //     lastName: "Musiala",
+  //     username: "jmusiala17",
+  //     role: "ADMIN"
+  // }
+
   return (
     <Router>
       <Header />
@@ -11,6 +19,7 @@ const App = () => {
         <Route path="/" element={<Home />}></Route>
         <Route path="/consumers" element={<Consumers />}></Route>
         <Route path="/consumers/:id" element={<SingleConsumer />}></Route>
+        <Route path="/new-consumer" element={<NewConsumer />}></Route>
       </Routes>
     </Router>
   );

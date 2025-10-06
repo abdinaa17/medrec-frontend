@@ -8,6 +8,8 @@ import type { Medication } from "../types/Medication";
 import { getDaysInAMonth } from "../utils/date";
 import { ListGroup, Table, Form } from "react-bootstrap";
 
+import profilePicture from "../assets/profile_placholder.jpg";
+
 const SingleConsumer = () => {
   const { id } = useParams();
 
@@ -26,11 +28,11 @@ const SingleConsumer = () => {
 
     try {
       const consumersRes = await axios.get(
-        "http://localhost:8080/api/v1/consumers/" + id
+        "http://localhost:8081/api/v1/consumers/" + id
       );
 
       const medicationsRes = await axios.get(
-        "http://localhost:8080/api/v1/consumers/" + id + "/medications"
+        "http://localhost:8081/api/v1/consumers/" + id + "/medications"
       );
 
       const singleConsumerData: Consumer = consumersRes.data;
@@ -60,7 +62,8 @@ const SingleConsumer = () => {
   }
 
   return (
-    <div className="container">
+    <div className="p-3">
+      <img src={profilePicture} alt="Profile picture" />
       <h2>
         {singleConsumer?.firstName} {singleConsumer?.lastName}
       </h2>

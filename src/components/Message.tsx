@@ -6,7 +6,7 @@ const Message: React.FC<{ variant: string; children: ReactNode }> = ({
   children,
 }) => {
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
+    <div className="container d-flex justify-content-center my-5">
       <Alert className="w-75 text-center" variant={variant}>
         {children}
       </Alert>
