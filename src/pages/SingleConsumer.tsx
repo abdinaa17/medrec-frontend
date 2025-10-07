@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { useParams } from "react-router";
 import type { Consumer } from "../types/Consumer";
 import axios from "axios";
@@ -6,9 +6,12 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import Message from "../components/Message";
 import type { Medication } from "../types/Medication";
 import { getDaysInAMonth } from "../utils/date";
-import { ListGroup, Table, Form } from "react-bootstrap";
+import { ListGroup, Table, Form, Button, Modal } from "react-bootstrap";
 
 import profilePicture from "../assets/profile_placholder.jpg";
+
+// Medicatio type for form submission
+type FormMedication = Omit<Medication, "id">;
 
 const SingleConsumer = () => {
   const { id } = useParams();
@@ -17,6 +20,11 @@ const SingleConsumer = () => {
   const [medications, setMedications] = useState<Medication[]>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null | any>();
+  const [addMedicationModal, setAddMedicationModal] = useState<boolean>(false);
+  const [formMedication, setFormMedication] = useState<FormMedication>({
+    name: "",
+    dose: "",
+  });
 
   const daysInMonth = getDaysInAMonth();
 
@@ -53,6 +61,20 @@ const SingleConsumer = () => {
     fetchSingleConsumer();
   }, []);
 
+  // input change event
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormMedication((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  // Add medication modal
+  const handleAddMedication = async (e: FormEvent<HTMLElement>) => {
+    e.preventDefault();
+    console.log(formMedication);
+  };
+
   if (error) {
     return <Message variant="danger">{error}</Message>;
   }
@@ -63,84 +85,140 @@ const SingleConsumer = () => {
 
   return (
     <div className="p-3">
-      <img src={profilePicture} alt="Profile picture" />
-      <h2>
-        {singleConsumer?.firstName} {singleConsumer?.lastName}
-      </h2>
-      <p>{singleConsumer?.dateOfBirth}</p>
+      <div className="d-flex  justify-content-between">
+        <div>
+          <img src={profilePicture} alt="Profile picture" />
+          <h2>
+            {singleConsumer?.firstName} {singleConsumer?.lastName}
+          </h2>
+          <p>{singleConsumer?.dateOfBirth}</p>
 
-      <p>No known Allergies</p>
+          <p>No known Allergies</p>
+        </div>
+        <div>
+          <Button onClick={() => setAddMedicationModal(!addMedicationModal)}>
+            Add Medication
+          </Button>
+        </div>
+      </div>
       <div>
         <h2>Medication list</h2>
         <div>
-          {medications && medications.length > 0
-            ? medications.map((medication) => {
-                return (
-                  <div key={medication.id}>
-                    <ListGroup>
-                      <ListGroup.Item>
-                        {medication.name} {medication.dose}
-                      </ListGroup.Item>
-                    </ListGroup>
-                    <Table striped bordered hover size="sm">
-                      <thead>
-                        <tr>
-                          <th>Time</th>
-                          {Array.from({ length: daysInMonth }).map((_, i) => {
-                            return (
-                              <th key={i + 1} role="button">
-                                {i + 1}
-                              </th>
-                            );
-                          })}
-                        </tr>
-                        <tr>
-                          <th>7am</th>
-                          {Array.from({ length: daysInMonth }).map((_, i) => {
-                            return (
-                              <th key={i + 1} role="button">
-                                <Form.Select size="sm">
-                                  <option value="AA">Administered</option>
-                                  <option value="R">Refused</option>
-                                </Form.Select>
-                              </th>
-                            );
-                          })}
-                        </tr>
-                        <tr>
-                          <th>3pm</th>
-                          {Array.from({ length: daysInMonth }).map((_, i) => {
-                            return (
-                              <th key={i + 1} role="button">
-                                <Form.Select size="sm">
-                                  <option value="AA">Administered</option>
-                                  <option value="R">Refused</option>
-                                </Form.Select>
-                              </th>
-                            );
-                          })}
-                        </tr>
-                        <tr>
-                          <th>7pm</th>
-                          {Array.from({ length: daysInMonth }).map((_, i) => {
-                            return (
-                              <th key={i + 1} role="button">
-                                <Form.Select size="sm">
-                                  <option value="AA">Administered</option>
-                                  <option value="R">Refused</option>
-                                </Form.Select>
-                              </th>
-                            );
-                          })}
-                        </tr>
-                      </thead>
-                    </Table>
-                  </div>
-                );
-              })
-            : "No medication found"}
+          {medications && medications.length > 0 ? (
+            medications.map((medication) => {
+              return (
+                <div key={medication.id}>
+                  <ListGroup>
+                    <ListGroup.Item>
+                      {medication.name} {medication.dose}
+                    </ListGroup.Item>
+                  </ListGroup>
+                  <Table striped bordered hover size="sm">
+                    <thead>
+                      <tr>
+                        <th>Time</th>
+                        {Array.from({ length: daysInMonth }).map((_, i) => {
+                          return (
+                            <th key={i + 1} role="button">
+                              {i + 1}
+                            </th>
+                          );
+                        })}
+                      </tr>
+                      <tr>
+                        <th>7am</th>
+                        {Array.from({ length: daysInMonth }).map((_, i) => {
+                          return (
+                            <th key={i + 1} role="button">
+                              <Form.Select size="sm">
+                                <option value="AA">Administered</option>
+                                <option value="R">Refused</option>
+                              </Form.Select>
+                            </th>
+                          );
+                        })}
+                      </tr>
+                      <tr>
+                        <th>3pm</th>
+                        {Array.from({ length: daysInMonth }).map((_, i) => {
+                          return (
+                            <th key={i + 1} role="button">
+                              <Form.Select size="sm">
+                                <option value="AA">Administered</option>
+                                <option value="R">Refused</option>
+                              </Form.Select>
+                            </th>
+                          );
+                        })}
+                      </tr>
+                      <tr>
+                        <th>7pm</th>
+                        {Array.from({ length: daysInMonth }).map((_, i) => {
+                          return (
+                            <th key={i + 1} role="button">
+                              <Form.Select size="sm">
+                                <option value="AA">Administered</option>
+                                <option value="R">Refused</option>
+                              </Form.Select>
+                            </th>
+                          );
+                        })}
+                      </tr>
+                    </thead>
+                  </Table>
+                </div>
+              );
+            })
+          ) : (
+            <div>
+              <p>No medication found</p>
+            </div>
+          )}
         </div>
       </div>
+
+      <Modal
+        show={addMedicationModal}
+        onHide={() => setAddMedicationModal(!addMedicationModal)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            Add mediction for: {singleConsumer?.firstName}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleAddMedication}>
+            <Form.Group>
+              <Form.Label>Medication name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Medication name"
+                name="name"
+                value={formMedication.name}
+                onChange={handleChange}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Medication dose</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Medication dose"
+                name="dose"
+                value={formMedication.dose}
+                onChange={handleChange}
+              ></Form.Control>
+            </Form.Group>
+            <Button
+              variant="primary"
+              onClick={() => setAddMedicationModal(!addMedicationModal)}
+              type="submit"
+              className="my-3 w-100"
+            >
+              Save Changes
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
