@@ -25,7 +25,7 @@ const NewConsumer = () => {
     }));
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const res = await axios.post(

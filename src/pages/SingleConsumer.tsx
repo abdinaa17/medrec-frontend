@@ -6,7 +6,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import Message from "../components/Message";
 import type { Medication } from "../types/Medication";
 import { getDaysInAMonth } from "../utils/date";
-import { ListGroup, Table, Form, Button, Modal } from "react-bootstrap";
+import { ListGroup, Table, Form, Button, Modal, Alert } from "react-bootstrap";
 
 import profilePicture from "../assets/profile_placholder.jpg";
 
@@ -20,11 +20,12 @@ const SingleConsumer = () => {
   const [medications, setMedications] = useState<Medication[]>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null | any>();
-  const [addMedicationModal, setAddMedicationModal] = useState<boolean>(false);
+  const [isMedicationModal, setIsMedicationModal] = useState<boolean>(false);
   const [formMedication, setFormMedication] = useState<FormMedication>({
     name: "",
     dose: "",
   });
+  const [medicationError, setMedicationError] = useState<string | null>(null);
 
   const daysInMonth = getDaysInAMonth();
 
@@ -70,9 +71,32 @@ const SingleConsumer = () => {
   };
 
   // Add medication modal
-  const handleAddMedication = async (e: FormEvent<HTMLElement>) => {
+  const handleAddMedication = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formMedication);
+
+    if (!formMedication.name || !formMedication.dose) {
+      setMedicationError("Required fields missing");
+      setIsMedicationModal(true);
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        `http://localhost:8081/api/v1/consumers/${singleConsumer?.id}/medications`,
+        formMedication
+      );
+
+      console.log(res);
+
+      setFormMedication({
+        name: "",
+        dose: "",
+      });
+      setMedicationError(null);
+      setIsMedicationModal(false);
+    } catch (err: any) {
+      console.log(err);
+    }
   };
 
   if (error) {
@@ -96,7 +120,7 @@ const SingleConsumer = () => {
           <p>No known Allergies</p>
         </div>
         <div>
-          <Button onClick={() => setAddMedicationModal(!addMedicationModal)}>
+          <Button onClick={() => setIsMedicationModal(!isMedicationModal)}>
             Add Medication
           </Button>
         </div>
@@ -178,8 +202,9 @@ const SingleConsumer = () => {
       </div>
 
       <Modal
-        show={addMedicationModal}
-        onHide={() => setAddMedicationModal(!addMedicationModal)}
+        centered
+        show={isMedicationModal}
+        onHide={() => setIsMedicationModal(!isMedicationModal)}
       >
         <Modal.Header closeButton>
           <Modal.Title>
@@ -192,7 +217,6 @@ const SingleConsumer = () => {
               <Form.Label>Medication name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Medication name"
                 name="name"
                 value={formMedication.name}
                 onChange={handleChange}
@@ -202,7 +226,6 @@ const SingleConsumer = () => {
               <Form.Label>Medication dose</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Medication dose"
                 name="dose"
                 value={formMedication.dose}
                 onChange={handleChange}
@@ -210,12 +233,15 @@ const SingleConsumer = () => {
             </Form.Group>
             <Button
               variant="primary"
-              onClick={() => setAddMedicationModal(!addMedicationModal)}
+              onClick={() => setIsMedicationModal(!isMedicationModal)}
               type="submit"
               className="my-3 w-100"
             >
               Save Changes
             </Button>
+            {medicationError && (
+              <Alert variant="danger">Required fields missing</Alert>
+            )}
           </Form>
         </Modal.Body>
       </Modal>

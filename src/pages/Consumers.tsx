@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import type { Consumer } from "../types/Consumer";
-import { Card } from "react-bootstrap";
+import { Card, Col, Row } from "react-bootstrap";
 import { Link, useSearchParams } from "react-router";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Message from "../components/Message";
@@ -55,11 +55,11 @@ const Consumers = () => {
         <h1>Your consumers</h1>
 
         {consumers && consumers.length > 0 ? (
-          <div>
+          <Row>
             {consumers.map((consumer) => {
               const { id, firstName, lastName, dateOfBirth } = consumer;
               return (
-                <section key={id}>
+                <Col key={id} md={4} className="my-4">
                   <Card style={{ width: "18rem" }}>
                     <Card.Img variant="top" src={profilePicture} />
                     <Card.Body>
@@ -70,10 +70,10 @@ const Consumers = () => {
                       <Link to={`/consumers/${id}`}>See more</Link>
                     </Card.Body>
                   </Card>
-                </section>
+                </Col>
               );
             })}
-          </div>
+          </Row>
         ) : (
           <div>
             <p>No consumer found</p>
