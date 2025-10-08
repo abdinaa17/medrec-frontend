@@ -2,9 +2,9 @@ import { createContext, useContext } from "react";
 import type { User } from "../types/User";
 
 const user: User = {
-  firstName: "admin",
-  lastName: "admin",
-  username: "admin",
+  firstName: "Jamal",
+  lastName: "Junior",
+  username: "jjamal",
   role: "ADMIN",
 };
 

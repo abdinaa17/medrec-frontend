@@ -75,8 +75,6 @@ const Header = () => {
               </Button>
             </Form>
             <div className="d-flex justify-content-center align-items-center ms-auto">
-              {/* <Image src={profilePicture} roundedCircle className="w-25 mr-2" />
-               */}
               <Dropdown align="end">
                 <Dropdown.Toggle
                   variant="light"
@@ -91,11 +89,14 @@ const Header = () => {
                   />
                 </Dropdown.Toggle>
                 <Dropdown.Menu className="border-0">
-                  <Dropdown.Header className="text-end text-decoration-underline">
+                  <Dropdown.Item className="text-end text-decoration-underline">
                     <Nav.Link as={Link} to="/profile">
                       {user?.username}
                     </Nav.Link>
-                  </Dropdown.Header>
+                  </Dropdown.Item>
+                  <Dropdown.Item className="text-end" role="link">
+                    Log out
+                  </Dropdown.Item>
                 </Dropdown.Menu>{" "}
               </Dropdown>
             </div>
